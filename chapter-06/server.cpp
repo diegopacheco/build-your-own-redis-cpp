@@ -130,5 +130,28 @@ static bool try_one_request(Conn *conn){
     return true; // success
 }
 
+// application callback when the socket is writable
+static void handle_write(Conn *conn){
+    assert(conn->outgoing.size() > 0);
+    ssize_t rv = write(conn->fd, &conn->outgoing[0], conn->outgoing.size());
+    if (rv < 0 && (errno == EAGAIN)){
+        return; // actually not ready
+    }
+    if (rv < 0){
+        msg_errno("write() error");
+        conn->want_close = true; // erro handling
+        return;
+    }
 
+    // remove written data from 'outgoing'
+    buf_consume(conn->outgoing, (size_t)rv);
+
+    // update the readiness intention
+    if (conn->outgoing.size() == 0){ // all data written
+        conn->want_read = true;
+        conn->want_write = false;
+    } // else: want writte
+}
+
+// application call when the socket is readable
 
