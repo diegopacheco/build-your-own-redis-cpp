@@ -154,4 +154,46 @@ static void handle_write(Conn *conn){
 }
 
 // application call when the socket is readable
+static void handle_read(Conn *conn){
+    // read some data
+    uint8_t buf[64 * 1024]; // 64KB
+    ssize_t rv = read(conn->fd, buf, sizeof(buf));
+    if (rv < 0 && (errno == EAGAIN)){
+        return; // actually not ready
+    }
+    // handle io error
+    if (rv < 0){
+        msg_errno("read() error");
+        conn->want_close = true;
+        return; // want close
+    }
+    // handle EOF
+    if (rv==0){
+        if (conn->incoming.size() == 0){
+            msg("client closed");
+        }else{
+            msg("unexpected EOF");
+        }
+        conn->want_close = true;
+        return; // want close
+    }
+    // got some new data
+    buf_append(conn->incoming, buf, (size_t)rv);
 
+    // parse requests and generare responses
+    while (try_one_request(conn)){}
+    // Q: Why calling this in a loop? See the explanation of "pipelining".
+
+    // update the readiness intention
+    if (conn->outgoing.size() > 0){ // has a response
+        conn->want_read = false;
+        conn->want_write = true;
+        // The socket is likely ready to write in a request-response protocol,
+        // try to write it without waiting for the next iteration.
+        return handle_write(conn);
+    }   // else: want read
+}
+
+int main(){
+    
+}
