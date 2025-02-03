@@ -70,4 +70,32 @@ static void buf_consume(std::vector<uint8_t> &buf, size_t n){
     buf.erase(buf.begin(), buf.begin() + n);
 }
 
+// application callback when the listening socket is ready
+static Conn *handle_accept(int fd){
+    // accept
+    struct sockaddr_in client_addr = {};
+    socklen_t socklen = sizeof(client_addr);
+    int connfd = accept(fd, (struct sockaddr *)&client_addr, &socklen);
+    if (connfd < 0){
+        msg_errno("accept() error");
+        return NULL;
+    }
+    uint32_t ip = client_addr.sin_addr.s_addr;
+    fprintf(stderr, "new client from %u.%u.%u.%u\n",
+            ip & 255, 
+            (ip >> 8) & 255, 
+            (ip >> 16) & 255,
+            (ip >> 24),
+            ntohl(client_addr.sin_port));
+
+    // set the new connection fd to nonblocking mode
+    fd_set_nb(connfd);
+
+    // create a `structu Conn`
+    Conn *conn = new Conn;
+    conn->fd = connfd;
+    conn->want_read = true;
+    return conn;
+}
+
 
