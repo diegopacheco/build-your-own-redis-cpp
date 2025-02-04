@@ -98,3 +98,28 @@ static Conn *handle_accept(int fd){
     conn->want_read = true;
     return conn;
 }
+
+const size_t k_max_args = 200 * 1000; // 200KB
+
+static bool read_u32(const uint8_t *&cur, const uint8_t *end, uint32_t &out) {
+    if (cur + 4 > end){
+        return false;
+    }
+    memcpy(&out, cur, 4);
+    cur += 4;
+    return true;
+}
+
+static bool read_str(const uint8_t *&cur, const uint8_t *end, size_t n, std::string &out) {
+    if (cur + n > end){
+        return false;
+    }
+    out.assign(cur, cur + n);
+    cur += n;
+    return true;
+}
+
+// +------+-----+------+-----+------+-----+-----+------+
+// | nstr | len | str1 | len | str2 | ... | len | strn |
+// +------+-----+------+-----+------+-----+-----+------+
+
