@@ -25,8 +25,8 @@ static void msg_errno(const char *msg){
     fprintf(stderr, "[%d] %s\n", errno, msg);
 }
 
-static void die(const char *msg){
-    fprintf(stderr, "[%d] %s\n", msg);
+static void die(const char *msg) {
+    fprintf(stderr, "[%d] %s\n", errno, msg);
     abort();
 }
 
@@ -81,7 +81,7 @@ static Conn *handle_accept(int fd){
         return NULL;
     }
     uint32_t ip = client_addr.sin_addr.s_addr;
-    fprintf(stderr, "new client from %u.%u.%u.%u\n",
+    fprintf(stderr, "new client from %u.%u.%u.%u:%u\n",
             ip & 255,
             (ip >> 8) & 255,
             (ip >> 16) & 255,
