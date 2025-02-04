@@ -195,5 +195,37 @@ static void make_response(const Response &resp, std::vector<uint8_t> &out) {
 
 // process 1 request if there is enough data
 static bool try_one_request(Conn *conn) {
-    
+    // try to parse the protocol: message header
+    if (conn->incoming.size() < 4) {
+        return false;   // want read
+    }
+    uint32_t len = 0;
+    memcpy(&len, conn->incoming.data(), 4);
+    if (len > k_max_msg) {
+        msg("too long");
+        conn->want_close = true;
+        return false;   // want close
+    }
+    // message body
+    if (4 + len > conn->incoming.size()) {
+        return false;   // want read
+    }
+    const uint8_t *request = &conn->incoming[4];
+
+    // got one request, do some application logic
+    std::vector<std::string> cmd;
+    if (parse_req(request, len, cmd) < 0) {
+        msg("bad request");
+        conn->want_close = true;
+        return false;   // want close
+    }
+    Response resp;
+    do_request(cmd, resp);
+    make_response(resp, conn->outgoing);
+
+    // application logic done! remove the request message.
+    buf_consume(conn->incoming, 4 + len);
+    // Q: Why not just empty the buffer? See the explanation of "pipelining".
+    return true;        // success
 }
+
