@@ -27,14 +27,14 @@ Client
 ```bash
 ❯ ./target/client set k 10
 server says: [0] 
-❯ ./target/client get k 10
-server says: [1] 
-❯ ./target/client get k 10
-server says: [1] 
 ❯ ./target/client set x 20
 server says: [0] 
-❯ ./target/client get x get y
-server says: [1] 
-❯ ./target/client xxx ttt
+❯ ./target/client get x
+server says: [0] 20
+❯ ./target/client get k
+server says: [0] 10
+❯ ./target/client get z
+server says: [2] 
+❯ ./target/client zzz cccc
 server says: [1] 
 ```
