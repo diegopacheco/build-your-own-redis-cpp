@@ -148,3 +148,23 @@ static int32_t parse_req(const uint8_t *data, size_t size, std::vector<std::stri
     }
     return 0;
 }
+
+// Response::status
+enum {
+    RES_OK = 0,
+    RES_ERR = 1, // error
+    RES_NX = 2,  // key not found
+};
+
+// +--------+---------+
+// | status | data... |
+// +--------+---------+
+
+struct Response {
+    uint32_t status = 0;
+    std::vector<uint8_t> data;
+};
+
+// placeholder; implemented later
+static std::map<std::string, std::string> g_data;
+
