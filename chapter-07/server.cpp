@@ -186,3 +186,14 @@ static void do_request(std::vector<std::string> &cmd, Response &out){
     }
 }
 
+static void make_response(const Response &resp, std::vector<uint8_t> &out) {
+    uint32_t resp_len = 4 + (uint32_t)resp.data.size();
+    buf_append(out, (const uint8_t *)&resp_len, 4);
+    buf_append(out, (const uint8_t *)&resp.status, 4);
+    buf_append(out, resp.data.data(),resp.data.size());
+}
+
+// process 1 request if there is enough data
+static bool try_one_request(Conn *conn) {
+    
+}
