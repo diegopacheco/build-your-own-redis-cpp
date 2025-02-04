@@ -294,5 +294,40 @@ static void handle_read(Conn *conn) {
 }
 
 int main() {
+    // the listening socket
+    int fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd < 0) {
+        die("socket() error");
+    }
+    int val = 1;
+    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
+
+    // bind
+    struct sockaddr_in addr = {};
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(1234);
+    addr.sin_addr.s_addr = htonl(0); // wildcard address 0.0.0.0
+    int rv = bind(fd, (const struct sockaddr *)&addr, sizeof(addr));
+    if (rv) {
+        die("bind() error");
+    }
+
+    // set the listen fd to non-blocking mode
+    fd_set_nb(fd);
+
+    // listen
+    rv = listen(fd, SOMAXCONN);
+    if (rv) {
+        die("listen() error");
+    }
+
+    // a map of all client connections, keyd by fd
+    std::vector<Conn *> fd2conn;
+    // the event loop
+    std::vector<struct pollfd> pollfds;
+    while(true){
+        
+    }
+
     return 0;
 }
