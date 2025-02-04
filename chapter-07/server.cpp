@@ -123,3 +123,28 @@ static bool read_str(const uint8_t *&cur, const uint8_t *end, size_t n, std::str
 // | nstr | len | str1 | len | str2 | ... | len | strn |
 // +------+-----+------+-----+------+-----+-----+------+
 
+static int32_t parse_req(const uint8_t *data, size_t size, std::vector<std::string> &out) {
+    const uint8_t *end = data + size;
+    uint32_t nstr = 0;
+    if (!read_u32(data, end, nstr)){
+        return -1;
+    }
+    if (nstr > k_max_args){
+        return -1; // safety limit
+    }
+
+    while(out.size() < nstr){
+        uint32_t len = 0;
+        if (!read_u32(data, end, len)){
+            return -1;
+        }
+        out.push_back(std::string());
+        if (!read_str(data, end, len, out.back())){
+            return -1;
+        }
+    }
+    if (data != end){
+        return -1; // trailing garbage
+    }
+    return 0;
+}
