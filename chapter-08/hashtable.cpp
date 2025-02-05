@@ -67,4 +67,58 @@ static void hm_help_rehashing(HMap *hmap){
         hmap->older = HTab{};
     }
 }
+static void hm_trigger_rehashing(HMap *hmap){
+    assert(hmap->older.tab == NULL);
+    // (newer, older) <- (new_table, newer)
+    hmap->older = hmap->newer;
+    h_init(&hmap->newer, (hmap->newer.mask + 1) * 2);
+    hmap->migrate_pos = 0;
+}
+
+HNode *hm_lookup(HMap *hmap, HNode *key, bool (*eq)(HNode *, HNode *)){
+    hm_help_rehashing(hmap);
+    HNode **from = h_lookup(&hmap->newer,key, eq);
+    if (!from){
+        from = h_lookup(&hmap->older,key,eq);
+    }
+    return from ? *from : NULL;
+}
+
+const size_t k_max_load_factor = 8;
+
+void hm_insert(HMap *hmap, HNode *node) {
+    if (!hmap->newer.tab) {
+        h_init(&hmap->newer, 4);    // initialize it if empty
+    }
+    h_insert(&hmap->newer, node);   // always insert to the newer table
+
+    if (!hmap->older.tab) {         // check whether we need to rehash
+        size_t shreshold = (hmap->newer.mask + 1) * k_max_load_factor;
+        if (hmap->newer.size >= shreshold) {
+            hm_trigger_rehashing(hmap);
+        }
+    }
+    hm_help_rehashing(hmap);        // migrate some keys
+}
+
+HNode *hm_delete(HMap *hmap, HNode *key, bool (*eq)(HNode *, HNode *)) {
+    hm_help_rehashing(hmap);
+    if (HNode **from = h_lookup(&hmap->newer, key, eq)) {
+        return h_detach(&hmap->newer, from);
+    }
+    if (HNode **from = h_lookup(&hmap->older, key, eq)) {
+        return h_detach(&hmap->older, from);
+    }
+    return NULL;
+}
+
+void hm_clear(HMap *hmap) {
+    free(hmap->newer.tab);
+    free(hmap->older.tab);
+    *hmap = HMap{};
+}
+
+size_t hm_size(HMap *hmap) {
+    return hmap->newer.size + hmap->older.size;
+}
 
