@@ -38,3 +38,33 @@ static HNode **h_lookup(HTab *htab, HNode *key, bool (*eq)(HNode *,HNode *)){
     return NULL;
 }
 
+// remove a node from the chain
+static HNode *h_detach(Htab *htab, HNode **from){
+    HNode *node = *from; // the target node
+    *from = node->next; // update the incoming pointer to the target
+    htab->size--;
+    return node;
+}
+
+const size_t k_rehashing_work = 128; // constant work
+
+static void hm_help_rehashing(HMap *hmap){
+    size_t nwork = 0;
+    while (nwork < k_rehashing_work && hmap->older.size > 0){
+        // find a non-empty slot
+        HNode **from = &hmap->older.tab[hmap->migrate_pos];
+        if (!*from){
+            hmap->migrate_pos++;
+            continue; // empty slot
+        }
+        // move the first list item to the newer table
+        h_insert(&hmap->newer,h_detach(&hmap->older, from));
+        nwork++;
+    }
+    // discard the old table if done
+    if (hmap->older.size==0 && hmap->older.tab){
+        free(hmap->older.tab);
+        hmap->older = HTab{};
+    }
+}
+
