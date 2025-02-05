@@ -35,3 +35,7 @@ https://build-your-own.org/redis/
 - 2 Types of hashtables - chaining and open addressing
 	- Open Addressing: seeks another slot in event collision
 	- Chaining: Groups conflicting keys under a linked list
+- Hash functions:
+	- Cryptographic hash functions, such as MD5, SHA1.
+	- Checksum hash functions, such as CRC32, Adler32.
+	- Hash functions for hashtables, such as FNV, Murmur. This is what to use!
