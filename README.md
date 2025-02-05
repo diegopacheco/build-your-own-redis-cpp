@@ -32,3 +32,6 @@ https://build-your-own.org/redis/
 - epoll API:
 	- epoll_create, epoll_wait, epoll_ctl
 - epoll is prefered
+- 2 Types of hashtables - chaining and open addressing
+	- Open Addressing: seeks another slot in event collision
+	- Chaining: Groups conflicting keys under a linked list
