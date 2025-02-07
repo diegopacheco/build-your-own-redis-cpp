@@ -39,3 +39,8 @@ https://build-your-own.org/redis/
 	- Cryptographic hash functions, such as MD5, SHA1.
 	- Checksum hash functions, such as CRC32, Adler32.
 	- Hash functions for hashtables, such as FNV, Murmur. This is what to use!
+- Redis can query ordered data by rank. 
+	- If you put 20M records in a sorted set
+	- You can get the recorded that ranked at 10M without going trough the first 10M records
+	- This feat cannot be emulated by current SQL databases
+	- SortedSet super power.	
