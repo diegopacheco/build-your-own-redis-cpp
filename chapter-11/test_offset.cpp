@@ -1,6 +1,6 @@
 #include <assert.h>
 #include "avl.h"
-
+#include <stdio.h>
 
 #define container_of(ptr, type, member) ({                  \
     const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
@@ -79,5 +79,6 @@ int main() {
     for (uint32_t i = 1; i < 500; ++i) {
         test_case(i);
     }
+    fprintf(stderr, "OK\n");
     return 0;
 }
