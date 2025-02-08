@@ -1,39 +1,39 @@
 #!/usr/bin/python3
 
 CASES = r'''
-$ ./target/server zscore asdf n1
+$ ./target/client zscore asdf n1
 (nil)
-$ ./target/server zquery xxx 1 asdf 1 10
+$ ./target/client zquery xxx 1 asdf 1 10
 (arr) len=0
 (arr) end
-$ ./target/server zadd zset 1 n1
+$ ./target/client zadd zset 1 n1
 (int) 1
-$ ./target/server zadd zset 2 n2
+$ ./target/client zadd zset 2 n2
 (int) 1
-$ ./target/server zadd zset 1.1 n1
+$ ./target/client zadd zset 1.1 n1
 (int) 0
-$ ./target/server zscore zset n1
+$ ./target/client zscore zset n1
 (dbl) 1.1
-$ ./target/server zquery zset 1 "" 0 10
+$ ./target/client zquery zset 1 "" 0 10
 (arr) len=4
 (str) n1
 (dbl) 1.1
 (str) n2
 (dbl) 2
 (arr) end
-$ ./target/server zquery zset 1.1 "" 1 10
+$ ./target/client zquery zset 1.1 "" 1 10
 (arr) len=2
 (str) n2
 (dbl) 2
 (arr) end
-$ ./target/server zquery zset 1.1 "" 2 10
+$ ./target/client zquery zset 1.1 "" 2 10
 (arr) len=0
 (arr) end
-$ ./target/server zrem zset adsf
+$ ./target/client zrem zset adsf
 (int) 0
-$ ./target/server zrem zset n1
+$ ./target/client zrem zset n1
 (int) 1
-$ ./target/server zquery zset 1 "" 0 10
+$ ./target/client zquery zset 1 "" 0 10
 (arr) len=2
 (str) n2
 (dbl) 2
