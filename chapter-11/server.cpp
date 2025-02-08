@@ -21,7 +21,6 @@
 #include "hashtable.h"
 #include "zset.h"
 
-
 static void msg(const char *msg) {
     fprintf(stderr, "%s\n", msg);
 }

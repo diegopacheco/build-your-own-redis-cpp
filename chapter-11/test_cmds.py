@@ -60,3 +60,4 @@ assert len(cmds) == len(outputs)
 for cmd, expect in zip(cmds, outputs):
     out = subprocess.check_output(shlex.split(cmd)).decode('utf-8')
     assert out == expect, f'cmd:{cmd} out:{out} expect:{expect}'
+    print('PASS ', cmd)
