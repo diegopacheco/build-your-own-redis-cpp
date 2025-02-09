@@ -23,7 +23,6 @@
 #include "zset.h"
 #include "list.h"
 
-
 static void msg(const char *msg) {
     fprintf(stderr, "%s\n", msg);
 }
