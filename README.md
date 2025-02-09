@@ -43,4 +43,8 @@ https://build-your-own.org/redis/
 	- If you put 20M records in a sorted set
 	- You can get the recorded that ranked at 10M without going trough the first 10M records
 	- This feat cannot be emulated by current SQL databases
-	- SortedSet super power.	
+	- SortedSet super power.
+- We can use the AVL tree to sort timers:
+	- Adding, updating, or removing a timer is O(log N).
+	- Finding the nearest timer (the leftmost node) is O(log N).
+- The minimum node can be cached to make finding the nearest timer O(1).	
