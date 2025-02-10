@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include "heap.cpp"
+#include <cstdio>
 
 struct Data {
     size_t heap_idx = -1;
@@ -86,5 +87,6 @@ int main() {
     for (uint32_t i = 0; i < 200; ++i) {
         test_case(i);
     }
+    fprintf(stderr, "OK\n");
     return 0;
 }
