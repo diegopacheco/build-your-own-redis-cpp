@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-
 static void msg(const char *msg) {
     fprintf(stderr, "%s\n", msg);
 }
