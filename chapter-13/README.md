@@ -23,8 +23,12 @@ client closed
 Client
 
 ```
-❯ ./target/client set x 10
+❯ ./target/client set x 100
 (nil)
 ❯ ./target/client get x
-(str) 10
+(str) 100
+❯ ./target/client pexpire x 1
+(int) 1
+❯ ./target/client get x
+(nil)
 ```
