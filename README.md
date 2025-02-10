@@ -53,3 +53,4 @@ https://build-your-own.org/redis/
 	- Set a maximum memory limit, randomly evict keys when the limit is reached.
 	- Set an expiration time (TTL) on keys, delete expired keys using timers.
 - We will implement TTL (time-to-live), which requires extending the timer code.
+- A heap is also a binary tree, but the data is ordered differently: For each node in a heap, both its left and right children are ordered after itself.
