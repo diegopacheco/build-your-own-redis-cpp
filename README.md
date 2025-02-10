@@ -39,7 +39,7 @@ https://build-your-own.org/redis/
 	- Cryptographic hash functions, such as MD5, SHA1.
 	- Checksum hash functions, such as CRC32, Adler32.
 	- Hash functions for hashtables, such as FNV, Murmur. This is what to use!
-- Redis can query ordered data by rank. 
+- Redis can query ordered data by rank.
 	- If you put 20M records in a sorted set
 	- You can get the recorded that ranked at 10M without going trough the first 10M records
 	- This feat cannot be emulated by current SQL databases
@@ -47,4 +47,9 @@ https://build-your-own.org/redis/
 - We can use the AVL tree to sort timers:
 	- Adding, updating, or removing a timer is O(log N).
 	- Finding the nearest timer (the leftmost node) is O(log N).
-- The minimum node can be cached to make finding the nearest timer O(1).	
+- The minimum node can be cached to make finding the nearest timer O(1).
+- Heap used for arbitrary TTL times, heap is done with array.
+-  Redis offers 2 mechanisms:
+	- Set a maximum memory limit, randomly evict keys when the limit is reached.
+	- Set an expiration time (TTL) on keys, delete expired keys using timers.
+- We will implement TTL (time-to-live), which requires extending the timer code.
